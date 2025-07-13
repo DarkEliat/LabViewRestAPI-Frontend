@@ -1,15 +1,18 @@
+<script setup lang="ts">
+import AppTitle from '@/components/AppTitle.vue';
+import NavBar from '@/components/NavBar.vue';
+import PageContent from '@/components/PageContent.vue';
+</script>
+
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div id="about" class="page-container">
+    <AppTitle />
+    <NavBar />
+    <PageContent>
+      <h1>O Projekcie</h1>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.
+    </PageContent>
   </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<style scoped></style>

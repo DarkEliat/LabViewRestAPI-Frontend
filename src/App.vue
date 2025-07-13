@@ -6,6 +6,4 @@ import { RouterView } from 'vue-router';
   <RouterView />
 </template>
 
-<style scoped>
-/* Tutaj możesz dodać swoje style */
-</style>
+<style scoped></style>

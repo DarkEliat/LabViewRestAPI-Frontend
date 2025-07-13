@@ -1,23 +1,19 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import AppTitle from '@/components/AppTitle.vue';
+import NavBar from '@/components/NavBar.vue';
+import PageContent from '@/components/PageContent.vue';
+</script>
 
 <template>
-  <div class="home">
-    <h1>Hello World!</h1>
+  <div id="home" class="page-container">
+    <AppTitle />
+    <NavBar />
+    <div class="page-content">
+      <PageContent>
+        <h1>Home</h1>
+      </PageContent>
+    </div>
   </div>
 </template>
 
-<style scoped>
-.home {
-  padding: 2rem;
-  text-align: center;
-}
-
-h1 {
-  color: var(--color-heading);
-  margin-bottom: 1rem;
-}
-
-p {
-  color: var(--color-text);
-}
-</style>
+<style scoped></style>
