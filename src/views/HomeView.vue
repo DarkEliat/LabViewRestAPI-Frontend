@@ -4,6 +4,7 @@ import NavBar from '@/components/NavBar.vue';
 import PageContent from '@/components/PageContent.vue';
 import ConnectionStatus from '@/components/connection/ConnectionStatus.vue';
 import ServoControl from '@/components/servo/ServoControl.vue';
+import ServoChart from '@/components/servo/ServoChart.vue';
 import LogViewer from '@/components/logs/LogViewer.vue';
 import WebSocketManager from '@/components/connection/WebSocketManager.vue';
 </script>
@@ -14,11 +15,14 @@ import WebSocketManager from '@/components/connection/WebSocketManager.vue';
         <NavBar />
         <PageContent title="Sterowanie serwomechanizmem">
             <div id="home-content">
-                <div id="control">
-                    <ConnectionStatus />
-                    <ServoControl />
+                <div id="top-panel">
+                    <div id="control">
+                        <ConnectionStatus />
+                        <ServoControl />
+                    </div>
+                    <LogViewer />
                 </div>
-                <LogViewer />
+                <ServoChart />
             </div>
         </PageContent>
         <WebSocketManager />
@@ -28,11 +32,19 @@ import WebSocketManager from '@/components/connection/WebSocketManager.vue';
 <style scoped>
 #home-content {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
     height: 100%;
+    width: 90%;
+    gap: 2rem;
+}
+
+#top-panel {
+    display: flex;
+    flex-direction: row;
     width: 100%;
+    gap: 1rem;
 }
 
 #control {
@@ -40,8 +52,7 @@ import WebSocketManager from '@/components/connection/WebSocketManager.vue';
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 50%;
+    width: 40%;
     gap: 1rem;
 }
 </style>
