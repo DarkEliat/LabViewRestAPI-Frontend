@@ -1,25 +1,26 @@
 <script setup lang="ts"></script>
 
 <template>
-  <RouterLink to="/">
-    <h1>Projekt OSP</h1>
-  </RouterLink>
+    <RouterLink to="/">
+        <h1>Projekt OSP</h1>
+    </RouterLink>
 </template>
 
 <style scoped>
 h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  color: var(--color-heading);
-  text-decoration: none;
-  cursor: pointer;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-heading);
+    text-decoration: none;
+    cursor: pointer;
+    margin: 0;
 }
 
 h1:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 </style>
