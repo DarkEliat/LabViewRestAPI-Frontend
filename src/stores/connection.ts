@@ -23,9 +23,12 @@ export const useConnectionStore = defineStore('connection', () => {
         }
     }
 
-    function updateConnectionStatus(labView: boolean, esp32: boolean) {
-        labViewConnected.value = labView;
-        esp32Connected.value = esp32;
+    function updateLabViewConnection(isConnected: boolean) {
+        labViewConnected.value = isConnected;
+    }
+
+    function updateEsp32Connection(isConnected: boolean) {
+        esp32Connected.value = isConnected;
     }
 
     return {
@@ -34,6 +37,7 @@ export const useConnectionStore = defineStore('connection', () => {
         esp32Connected,
         connectWebSocket,
         disconnectWebSocket,
-        updateConnectionStatus,
+        updateLabViewConnection,
+        updateEsp32Connection,
     };
 });

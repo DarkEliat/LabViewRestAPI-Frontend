@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { setControlMode } from '@/services/servo.service';
+import { useConnectionStore } from '@/stores/connection';
 import { useServoStore } from '@/stores/servo';
 
+const connectionStore = useConnectionStore();
 const servoStore = useServoStore();
 </script>
 
@@ -10,15 +13,17 @@ const servoStore = useServoStore();
         <div id="control-mode-buttons">
             <button
                 class="control-button"
-                @click="servoStore.setControlMode('manual')"
-                :class="{ active: servoStore.controlMode === 'manual' }"
+                @click="setControlMode('manual', true)"
+                :class="{ active: servoStore.currentStatus.status.mode === 'manual' }"
+                :disabled="connectionStore.labViewConnected !== true"
             >
                 MANUAL
             </button>
             <button
                 class="control-button"
-                @click="servoStore.setControlMode('auto')"
-                :class="{ active: servoStore.controlMode === 'auto' }"
+                @click="setControlMode('auto', true)"
+                :class="{ active: servoStore.currentStatus.status.mode === 'auto' }"
+                :disabled="connectionStore.labViewConnected !== true"
             >
                 AUTO
             </button>

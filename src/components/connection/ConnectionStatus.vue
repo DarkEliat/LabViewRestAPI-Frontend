@@ -8,13 +8,19 @@ const connectionStore = useConnectionStore();
     <div class="connection-status">
         <div class="control-element">
             Status połączenia z LabView:
-            <span class="connection-status-text">
+            <span
+                class="connection-status-text"
+                :class="connectionStore.labViewConnected ? 'connected' : 'disconnected'"
+            >
                 {{ connectionStore.labViewConnected ? 'Połączono' : 'Niepołączono' }}
             </span>
         </div>
         <div class="control-element">
             Status połączenia z ESP32:
-            <span class="connection-status-text">
+            <span
+                class="connection-status-text"
+                :class="connectionStore.esp32Connected ? 'connected' : 'disconnected'"
+            >
                 {{ connectionStore.esp32Connected ? 'Połączono' : 'Niepołączono' }}
             </span>
         </div>
@@ -40,5 +46,13 @@ const connectionStore = useConnectionStore();
 
 .connection-status-text {
     font-weight: bold;
+}
+
+.connection-status-text.connected {
+    color: green;
+}
+
+.connection-status-text.disconnected {
+    color: red;
 }
 </style>

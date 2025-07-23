@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useServoStore } from '@/stores/servo';
+import { setPosition } from '@/services/servo.service';
 
 const servoStore = useServoStore();
 </script>
@@ -13,19 +14,25 @@ const servoStore = useServoStore();
                 type="range"
                 min="0"
                 max="180"
-                v-model="servoStore.nextPosition"
-                @keyup.enter="servoStore.setNewPosition"
+                v-model.number="servoStore.nextPosition"
+                @keyup.enter="setPosition(servoStore.nextPosition)"
+                :disabled="servoStore.currentStatus.status.mode !== 'manual'"
             />
             <input
                 id="servo-position-number"
                 type="number"
                 min="0"
                 max="180"
-                v-model="servoStore.nextPosition"
-                @keyup.enter="servoStore.setNewPosition"
+                v-model.number="servoStore.nextPosition"
+                @keyup.enter="setPosition(servoStore.nextPosition)"
                 :class="{ 'invalid-input': !servoStore.isNextPositionValid }"
+                :disabled="servoStore.currentStatus.status.mode !== 'manual'"
             />
-            <button class="control-button" @click="servoStore.setNewPosition">
+            <button
+                class="control-button"
+                @click="setPosition(servoStore.nextPosition)"
+                :disabled="servoStore.currentStatus.status.mode !== 'manual'"
+            >
                 Ustaw pozycję!
             </button>
         </div>
@@ -80,6 +87,55 @@ const servoStore = useServoStore();
     border-radius: 0.25rem;
     background: var(--color-background);
     color: var(--color-text);
+}
+
+/* Wspólne style dla wszystkich kontrolek gdy są disabled */
+#servo-position-range:disabled,
+#servo-position-number:disabled,
+.control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Specyficzne style dla range inputa */
+#servo-position-range:disabled::-webkit-slider-thumb {
+    background: var(--color-border);
+    cursor: not-allowed;
+}
+
+#servo-position-range:disabled::-webkit-slider-runnable-track {
+    background: var(--color-border-hover);
+}
+
+/* Specyficzne style dla number inputa i buttona */
+#servo-position-number:disabled,
+.control-button:disabled {
+    background-color: var(--color-border-hover);
+    border-color: var(--color-border);
+}
+
+/* Wspólny tooltip dla wszystkich kontrolek */
+#servo-position-range:disabled,
+#servo-position-number:disabled,
+.control-button:disabled {
+    position: relative;
+}
+
+#servo-position-range:disabled:hover::after,
+#servo-position-number:disabled:hover::after,
+.control-button:disabled:hover::after {
+    content: 'Dostępne tylko w trybie MANUAL';
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
 }
 
 .invalid-input {

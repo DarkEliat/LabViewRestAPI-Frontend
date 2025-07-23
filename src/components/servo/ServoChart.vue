@@ -107,7 +107,7 @@ const chartOptions = computed(() => ({
 
 // Aktualizacja wykresu przy zmianie pozycji
 watch(
-    () => servoStore.currentPosition,
+    () => servoStore.currentStatus.status.position,
     (newPosition) => {
         chartStore.addDataPoint(newPosition);
     }
@@ -128,11 +128,11 @@ const updateInterval = ref<number | null>(null);
 
 onMounted(() => {
     // Dodaj aktualną pozycję jako pierwszy punkt
-    chartStore.addDataPoint(servoStore.currentPosition);
+    chartStore.addDataPoint(servoStore.currentStatus.status.position);
 
     // Ustaw interwał aktualizacji co 100ms (10 próbek na sekundę)
     updateInterval.value = setInterval(() => {
-        chartStore.addDataPoint(servoStore.currentPosition);
+        chartStore.addDataPoint(servoStore.currentStatus.status.position);
     }, 100) as unknown as number;
 });
 
