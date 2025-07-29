@@ -9,19 +9,7 @@ export const useChartStore = defineStore('chart', () => {
     const chartPoints = ref<ChartPoint[]>([]);
     const startTime = ref<number | null>(null);
     const lastSampleTime = ref<number | null>(null);
-
-    const timeWindow = computed(() => {
-        if (chartPoints.value.length === 0) return { min: 0, max: xAxisSize };
-
-        const lastTime = Math.ceil(chartPoints.value[chartPoints.value.length - 1].elapsedTime);
-        const minTime = Math.max(0, lastTime - xAxisSize.value);
-        const maxTime = minTime + xAxisSize.value;
-
-        return {
-            min: minTime,
-            max: maxTime,
-        };
-    });
+    const timeWindow = ref({ min: 0, max: xAxisSize.value });
 
     const samplingPeriod = computed(() => {
         if (typeof samplingRate.value === 'number' && samplingRate.value > 0)
@@ -52,6 +40,12 @@ export const useChartStore = defineStore('chart', () => {
         lastSampleTime.value = currentTime;
 
         chartPoints.value.push({ elapsedTime, position });
+
+        // Rolling chart — przesuwanie osi X
+        timeWindow.value = {
+            min: Math.max(0, elapsedTime - xAxisSize.value),
+            max: Math.max(xAxisSize.value, elapsedTime),
+        };
 
         // Usuń najstarsze punkty jeśli przekroczyliśmy limit
         if (chartPoints.value.length > MAX_POINTS) {

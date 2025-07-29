@@ -96,7 +96,7 @@ const chartOptions = computed(() => ({
                 maxRotation: 0,
                 stepSize: 1, // Pokazywanie etykiety co 1 sekundę
                 callback(value: string | number) {
-                    return `${value}`;
+                    return `${~~value}`;
                 },
             },
         },
