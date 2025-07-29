@@ -4,12 +4,15 @@ import ServoModeSelector from './ServoModeSelector.vue';
 import ServoDisplay from './ServoDisplay.vue';
 import ServoPositionInput from './ServoPositionInput.vue';
 import { getStatus } from '@/services/servo.service';
+import { useChartStore } from '@/stores/chart';
 
+const chartStore = useChartStore();
 let intervalId: number;
 
 onMounted(() => {
-    getStatus(true); // Initial call
-    intervalId = setInterval(() => getStatus(true), 1000);
+    getStatus(true); // Pierwszy odczyt statusu przez API
+
+    intervalId = setInterval(() => getStatus(true), chartStore.samplingPeriod);
 });
 
 onUnmounted(() => {

@@ -1,27 +1,21 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-
-interface ChartDataPoint {
-    elapsedTime: number; // czas w sekundach od rozpoczęcia
-    position: number;
-}
+import type { ChartPoint } from '@/types/chart.types';
 
 export const useChartStore = defineStore('chart', () => {
-    const WINDOW_SIZE = 60; // 60 sekund okna
-    const SAMPLE_RATE = 10; // 10 próbek na sekundę
-    const chartData = ref<ChartDataPoint[]>([]);
+    const MAX_POINTS = 10000;
+    const samplingRate = ref<number>(10); // Ilość zapytań o pomiar do API na sekundę
+    const xAxisSize = ref<number>(30); // Ilość sekund na osi poziomej
+    const chartPoints = ref<ChartPoint[]>([]);
     const startTime = ref<number | null>(null);
     const lastSampleTime = ref<number | null>(null);
 
-    // Eksportujemy bezpośrednio dane wykresu
-    const chartPoints = computed(() => chartData.value);
-
     const timeWindow = computed(() => {
-        if (chartData.value.length === 0) return { min: 0, max: WINDOW_SIZE };
+        if (chartPoints.value.length === 0) return { min: 0, max: xAxisSize };
 
-        const lastTime = chartData.value[chartData.value.length - 1].elapsedTime;
-        const minTime = Math.max(0, lastTime - WINDOW_SIZE);
-        const maxTime = minTime + WINDOW_SIZE;
+        const lastTime = Math.ceil(chartPoints.value[chartPoints.value.length - 1].elapsedTime);
+        const minTime = Math.max(0, lastTime - xAxisSize.value);
+        const maxTime = minTime + xAxisSize.value;
 
         return {
             min: minTime,
@@ -29,10 +23,21 @@ export const useChartStore = defineStore('chart', () => {
         };
     });
 
+    const samplingPeriod = computed(() => {
+        if (typeof samplingRate.value === 'number' && samplingRate.value > 0)
+            return 1000 / samplingRate.value; // 1000 ms / ilość próbek na sekundę = okres próbkowania
+
+        throw new Error('Sampling rate is not a number or is less then 0');
+    });
+
+    function setSamplingRate(newSamplingRate: number) {
+        if (newSamplingRate > 0) samplingRate.value = newSamplingRate;
+    }
+
     function initializeChart() {
         startTime.value = Date.now();
         lastSampleTime.value = null;
-        chartData.value = [];
+        chartPoints.value = [];
     }
 
     function addDataPoint(position: number) {
@@ -43,33 +48,30 @@ export const useChartStore = defineStore('chart', () => {
 
         const currentTime = Date.now();
 
-        // Sprawdź czy minął odpowiedni czas od ostatniej próbki (1/SAMPLE_RATE sekund)
-        if (
-            lastSampleTime.value !== null &&
-            currentTime - lastSampleTime.value < 1000 / SAMPLE_RATE
-        ) {
-            return; // Za wcześnie na nową próbkę
-        }
-
-        const elapsedTime = Math.round((currentTime - startTime.value) / 1000);
+        const elapsedTime = (currentTime - startTime.value) / 1000;
         lastSampleTime.value = currentTime;
 
-        chartData.value.push({ elapsedTime, position });
+        chartPoints.value.push({ elapsedTime, position });
 
-        // Usuń punkty starsze niż WINDOW_SIZE sekund od aktualnego czasu
-        const minTime = elapsedTime - WINDOW_SIZE;
-        chartData.value = chartData.value.filter((point) => point.elapsedTime > minTime);
+        // Usuń najstarsze punkty jeśli przekroczyliśmy limit
+        if (chartPoints.value.length > MAX_POINTS) {
+            chartPoints.value = chartPoints.value.slice(-MAX_POINTS);
+        }
     }
 
     function clearData() {
-        chartData.value = [];
+        chartPoints.value = [];
         startTime.value = null;
         lastSampleTime.value = null;
     }
 
     return {
+        MAX_POINTS,
+        samplingRate,
+        samplingPeriod,
         chartPoints,
         timeWindow,
+        setSamplingRate,
         addDataPoint,
         clearData,
         initializeChart,
