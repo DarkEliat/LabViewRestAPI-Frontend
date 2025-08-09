@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed, unref } from 'vue';
+import { computed, unref } from 'vue';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -13,16 +13,12 @@ import {
 import type { TooltipItem } from 'chart.js';
 import { Line } from 'vue-chartjs';
 import { useChartStore } from '@/stores/chart';
-import { useServoStore } from '@/stores/servo';
-import { useConnectionStore } from '@/stores/connection';
 import type { ChartPoint } from '@/types/chart.types';
 
 // Rejestracja komponentów Chart.js
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const chartStore = useChartStore();
-const servoStore = useServoStore();
-const connectionStore = useConnectionStore();
 
 // Reaktywne wartości dla osi czasu
 const timeMin = computed(() => chartStore.timeWindow.min);
@@ -118,27 +114,6 @@ const chartOptions = computed(() => ({
         },
     },
 }));
-
-// Interwał aktualizacji
-const updateInterval = ref<number | null>(null);
-
-onMounted(() => {
-    // Dodaj aktualną pozycję jako pierwszy punkt
-    if (connectionStore.labViewConnected)
-        chartStore.addDataPoint(servoStore.currentStatus.status.position);
-
-    // Ustaw interwał aktualizacji co 100ms (10 próbek na sekundę)
-    updateInterval.value = setInterval(() => {
-        if (connectionStore.labViewConnected)
-            chartStore.addDataPoint(servoStore.currentStatus.status.position);
-    }, 100) as unknown as number;
-});
-
-onUnmounted(() => {
-    if (updateInterval.value !== null) {
-        clearInterval(updateInterval.value);
-    }
-});
 </script>
 
 <template>

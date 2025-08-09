@@ -28,14 +28,14 @@ const servoStore = useServoStore();
                 :class="{ 'invalid-input': !servoStore.isNextPositionValid }"
                 :disabled="servoStore.currentStatus.status.mode !== 'manual'"
             />
-            <button
-                class="control-button"
-                @click="setPosition(servoStore.nextPosition)"
-                :disabled="servoStore.currentStatus.status.mode !== 'manual'"
-            >
-                Ustaw pozycję!
-            </button>
         </div>
+        <button
+            class="control-button"
+            @click="setPosition(servoStore.nextPosition)"
+            :disabled="servoStore.currentStatus.status.mode !== 'manual'"
+        >
+            Ustaw pozycję
+        </button>
     </div>
 </template>
 
@@ -145,8 +145,10 @@ const servoStore = useServoStore();
 
 .control-button {
     min-width: 10rem;
+    width: calc(10rem + 1rem + 5rem);
     height: 2rem;
     flex-shrink: 0;
+    margin-top: 0.5rem;
     background-color: var(--color-border);
     border-radius: 0.5rem;
     border: 1px solid var(--color-border);

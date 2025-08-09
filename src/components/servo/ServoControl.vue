@@ -21,7 +21,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div id="servo" class="control-element">
+    <div id="servo">
         <ServoDisplay />
         <ServoPositionInput />
         <ServoModeSelector />
@@ -31,9 +31,9 @@ onUnmounted(() => {
 <style scoped>
 #servo {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     width: 100%;
     margin-top: 1rem;
     gap: 1rem;

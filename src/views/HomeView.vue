@@ -5,7 +5,6 @@ import PageContent from '@/components/PageContent.vue';
 import ConnectionStatus from '@/components/connection/ConnectionStatus.vue';
 import ServoControl from '@/components/servo/ServoControl.vue';
 import ServoChart from '@/components/servo/ServoChart.vue';
-import LogViewer from '@/components/logs/LogViewer.vue';
 import WebSocketManager from '@/components/connection/WebSocketManager.vue';
 </script>
 
@@ -20,7 +19,6 @@ import WebSocketManager from '@/components/connection/WebSocketManager.vue';
                         <ConnectionStatus />
                         <ServoControl />
                     </div>
-                    <LogViewer />
                 </div>
                 <ServoChart />
             </div>
@@ -43,6 +41,7 @@ import WebSocketManager from '@/components/connection/WebSocketManager.vue';
 #top-panel {
     display: flex;
     flex-direction: row;
+    justify-content: center;
     width: 100%;
     gap: 1rem;
 }
@@ -52,7 +51,7 @@ import WebSocketManager from '@/components/connection/WebSocketManager.vue';
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 40%;
+    width: 100%;
     gap: 1rem;
 }
 </style>
