@@ -12,69 +12,135 @@ import PageContent from '@/components/PageContent.vue';
             <div id="about-content">
                 <section class="about-section">
                     <h2>Cel Projektu</h2>
-                    <p>
-                        Projekt ma na celu stworzenie urządzenia wykonawczego (serwomechanizmu)
-                        sterowanego za pomocą REST API. System składa się z trzech głównych
-                        komponentów:
-                    </p>
-                    <ul>
-                        <li>Frontend (interfejs użytkownika)</li>
-                        <li>Backend (LabVIEW REST API)</li>
-                        <li>Urządzenie wykonawcze (ESP32 + serwomechanizm)</li>
-                    </ul>
+                    <div class="spec-group">
+                        <p>
+                            Projekt ma na celu stworzenie urządzenia wykonawczego (serwomechanizmu)
+                            sterowanego za pomocą REST API. System składa się z trzech głównych
+                            komponentów:
+                        </p>
+                        <ul>
+                            <li><code>Frontend</code> (interfejs użytkownika; klient)</li>
+                            <li><code>Backend</code> (LabVIEW REST API)</li>
+                            <li><code>Urządzenie wykonawcze</code> (ESP32 + serwomechanizm)</li>
+                        </ul>
+                    </div>
                 </section>
 
                 <section class="about-section">
-                    <h2>Specyfikacja Techniczna</h2>
+                    <h2>Frontend (Vue.js)</h2>
                     <div class="spec-group">
-                        <h3>Backend (LabVIEW)</h3>
                         <ul>
                             <li>
-                                <strong>Endpoint /actuator (POST)</strong>
-                                <p>
-                                    Przyjmuje żądania z parametrami sterującymi w formacie JSON:
-                                    <code>{ mode: "manual"|"auto", position: 0-180 }</code>
-                                </p>
+                                Możliwe jest ręcznie ustawiwnie kąta serwa suwakiem lub przez
+                                wpisanie liczby, a następnie kliknięcie <code>Ustaw pozycję</code>.
+                            </li>
+                            <li>Aktualną pozycję widać na bieżąco obok kontrolek.</li>
+                            <li>
+                                Dostępne są dwa tryby pracy: <code>ręczny</code> i
+                                <code>automatyczny</code>. W trybie ręcznym sterowanie odbywa się
+                                bezpośrednio.
                             </li>
                             <li>
-                                <strong>Endpoint /status (GET)</strong>
-                                <p>
-                                    Zwraca aktualny stan urządzenia w formacie JSON:
-                                    <code>{ mode: "manual"|"auto", current_position: 0-180 }</code>
-                                </p>
+                                Dwie górne kontrolki wskazują czy aplikacja jest połączona z
+                                serwerem i urządzeniem ESP32.
+                            </li>
+                            <li>
+                                Wykres pokazuje ostatnie <code>~30</code> sekund ruchu serwa, co
+                                ułatwia śledzenie zmian.
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>Zakres pozycji serwa: <code>0–180°</code></li>
+                            <li>
+                                Adres serwera:
+                                <code>http://localhost:9090/ServoControlService</code>
+                            </li>
+                            <li>Odświeżanie danych: <code>~10 Hz</code></li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="about-section">
+                    <h2>Backend (LabVIEW)</h2>
+                    <div class="spec-group">
+                        <ul>
+                            <li>
+                                Uruchomiony serwer, przyjmuje polecenia (<code
+                                    >ustawianie pozycji</code
+                                >, <code>zmiana trybu pracy</code>) i zwraca aktualny stan serwa.
+                            </li>
+                            <li>
+                                Serwer przekazuje polecenia do urządzenia ESP32 i odbiera od niego
+                                bieżącą pozycję.
+                            </li>
+                            <li>
+                                Ustawienia połączenia (<code>adres</code>, <code>port</code>) można
+                                łatwo dopasować do lokalnej sieci.
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>
+                                Adres domyślny:
+                                <code>http://localhost:9090/ServoControlService</code>
+                            </li>
+                            <li>
+                                Endpointy: <code>GET /ServoControlService/status</code>,
+                                <code>POST /ServoControlService/actuator</code>
+                            </li>
+                            <li>Timeout: <code>5 s</code></li>
+                            <li>
+                                JSON:
+                                <code
+                                    >{ "status": { "mode": "manual" | "auto", "position": 0-180 }
+                                    }</code
+                                >
                             </li>
                         </ul>
                     </div>
+                </section>
 
+                <section class="about-section">
+                    <h2>ESP32 (Sterowanie serwomechanizmem)</h2>
                     <div class="spec-group">
-                        <h3>Frontend (Vue.js)</h3>
                         <ul>
-                            <li>Interfejs sterowania z suwakiem i polem numerycznym (0-180°)</li>
-                            <li>Przełącznik trybów pracy (manual/auto)</li>
-                            <li>Wskaźnik aktualnej pozycji</li>
-                            <li>Wizualizacja stanu połączenia z LabVIEW i ESP32</li>
-                            <li>System logowania zdarzeń</li>
+                            <li>
+                                ESP32 steruje serwem w zakresie <code>0–180°</code> i płynnie
+                                dojeżdża do wskazanej pozycji.
+                            </li>
+                            <li>
+                                Dostepny jest prosty interfejs sieciowy, dzięki któremu aplikacja
+                                może odczytać stan i wysłać nowe polecenia.
+                            </li>
+                            <li>
+                                Aktualnie połączenie następuje z <code>lokalną siecią Wi‑Fi</code>,
+                                do której połączony jest również <code>Serwer</code> (LabView) i
+                                <code>Klient</code> (Vue.js); w przyszłości możliwe aktualizacje
+                                przez sieć Internet.
+                            </li>
                         </ul>
-                    </div>
-
-                    <div class="spec-group">
-                        <h3>Urządzenie Wykonawcze</h3>
                         <ul>
-                            <li>Mikrokontroler ESP32</li>
-                            <li>Serwomechanizm z zakresem ruchu 0-180°</li>
-                            <li>Komunikacja przez WebSocket</li>
+                            <li>Adres urządzenia: <code>http://&lt;esp32-ip&gt;</code></li>
+                            <li>
+                                Endpointy: <code>GET /status</code>, <code>POST /actuator</code>
+                            </li>
+                            <li>Nagłówek: <code>Content-Type: application/json</code></li>
+                            <li>
+                                Przykład żądania (ten sam format JSON co dla Backendu powyżej):
+                                <code>{ "status": { "mode": "manual", "position": 90 } }</code>
+                            </li>
                         </ul>
                     </div>
                 </section>
 
                 <section class="about-section">
                     <h2>Autorzy:</h2>
-                    <ul>
-                        <li>Jan Kostka</li>
-                        <li>Dmytro Levytskyi</li>
-                        <li>Ihor Nytka</li>
-                    </ul>
-
+                    <div class="spec-group">
+                        <ul>
+                            <li>Jan Kostka</li>
+                            <li>Dmytro Levytskyi</li>
+                            <li>Ihor Nytka</li>
+                        </ul>
+                    </div>
                     <p>Projekt realizowany w ramach zajęć z Oprogramowania Systemów Pomiarowych.</p>
                 </section>
             </div>
@@ -85,7 +151,7 @@ import PageContent from '@/components/PageContent.vue';
 <style scoped>
 #about-content {
     width: 100%;
-    padding: 2rem;
+    padding: 0 2rem;
     text-align: left;
 }
 
