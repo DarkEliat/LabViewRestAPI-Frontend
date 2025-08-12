@@ -68,7 +68,7 @@ export const useChartStore = defineStore('chart', () => {
         }
 
         chartPoints.value = chartPoints.value.filter(
-            (point) => elapsedTime - point.elapsedTime <= (xAxisSize.value + 1)
+            (point) => elapsedTime - point.elapsedTime <= xAxisSize.value + 1
         );
     }
 
@@ -81,13 +81,12 @@ export const useChartStore = defineStore('chart', () => {
     function startDataCollection() {
         if (updateInterval.value === null) {
             // Dodaj pierwszy punkt
-            if (connectionStore.labViewConnected) {
+            if (connectionStore.labViewConnected && connectionStore.esp32Connected)
                 addDataPoint(servoStore.currentStatus.status.position);
-            }
 
             // Ustaw interwał aktualizacji
             updateInterval.value = setInterval(() => {
-                if (connectionStore.labViewConnected) {
+                if (connectionStore.labViewConnected && connectionStore.esp32Connected) {
                     addDataPoint(servoStore.currentStatus.status.position);
                 }
             }, samplingPeriod.value) as unknown as number;

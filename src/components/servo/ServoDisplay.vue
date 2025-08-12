@@ -6,7 +6,7 @@ const servoStore = useServoStore();
 
 <template>
     <div class="control-element">
-        Aktualna pozycja:
+        <span class="position-label">Aktualna pozycja:</span>
         <span id="servo-status-text">{{ servoStore.currentStatus.status.position }}° / 180°</span>
     </div>
 </template>
@@ -24,5 +24,9 @@ const servoStore = useServoStore();
 #servo-status-text {
     font-size: 1.2rem;
     font-weight: bold;
+}
+
+.position-label {
+    margin-bottom: 0.5rem;
 }
 </style>

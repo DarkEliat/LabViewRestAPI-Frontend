@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import { useServoStore } from '@/stores/servo';
+import { useConnectionStore } from '@/stores/connection';
 import { setPosition } from '@/services/servo.service';
 
 const servoStore = useServoStore();
+const connectionStore = useConnectionStore();
+
+const isDisabled = () =>
+    servoStore.currentStatus.status.mode !== 'manual' ||
+    connectionStore.labViewConnected !== true ||
+    connectionStore.esp32Connected !== true;
 </script>
 
 <template>
     <div class="control-element">
-        Nowa pozycja:
+        <span class="position-label">Nowa pozycja:</span>
         <div class="input-group">
             <input
                 id="servo-position-range"
@@ -16,7 +23,7 @@ const servoStore = useServoStore();
                 max="180"
                 v-model.number="servoStore.nextPosition"
                 @keyup.enter="setPosition(servoStore.nextPosition)"
-                :disabled="servoStore.currentStatus.status.mode !== 'manual'"
+                :disabled="isDisabled()"
             />
             <input
                 id="servo-position-number"
@@ -26,13 +33,13 @@ const servoStore = useServoStore();
                 v-model.number="servoStore.nextPosition"
                 @keyup.enter="setPosition(servoStore.nextPosition)"
                 :class="{ 'invalid-input': !servoStore.isNextPositionValid }"
-                :disabled="servoStore.currentStatus.status.mode !== 'manual'"
+                :disabled="isDisabled()"
             />
         </div>
         <button
             class="control-button"
             @click="setPosition(servoStore.nextPosition)"
-            :disabled="servoStore.currentStatus.status.mode !== 'manual'"
+            :disabled="isDisabled()"
         >
             Ustaw pozycję
         </button>
@@ -93,8 +100,8 @@ const servoStore = useServoStore();
 #servo-position-range:disabled,
 #servo-position-number:disabled,
 .control-button:disabled {
-    opacity: 0.5;
     cursor: not-allowed;
+    color: #888;
 }
 
 /* Specyficzne style dla range inputa */
@@ -124,12 +131,12 @@ const servoStore = useServoStore();
 #servo-position-range:disabled:hover::after,
 #servo-position-number:disabled:hover::after,
 .control-button:disabled:hover::after {
-    content: 'Dostępne tylko w trybie MANUAL';
+    content: 'Wymagane połączenie z serwerem i ESP32 oraz tryb MANUAL';
     position: absolute;
     bottom: calc(100% + 10px);
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
+    background: black;
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
@@ -160,5 +167,9 @@ const servoStore = useServoStore();
 
 .control-button:hover {
     background-color: var(--color-border-hover);
+}
+
+.position-label {
+    margin-bottom: 0.5rem;
 }
 </style>

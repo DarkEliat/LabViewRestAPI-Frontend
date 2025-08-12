@@ -32,10 +32,20 @@ class ApiService {
             // Jeśli dostaliśmy odpowiedź, oznacza to że serwer działa
             connectionStore.updateLabViewConnection(true);
 
+            if (
+                response &&
+                typeof response === 'object' &&
+                'status' in response &&
+                'esp32Connected' in response &&
+                typeof response.esp32Connected === 'boolean'
+            )
+                connectionStore.updateEsp32Connection(response.esp32Connected);
+
             return response;
         } catch {
             // Jeśli wystąpił błąd, oznacza to problem z połączeniem
             connectionStore.updateLabViewConnection(false);
+            connectionStore.updateEsp32Connection(false);
             throw new Error('Error connecting to server');
         }
     }

@@ -25,6 +25,22 @@ export const DEFAULT_SERVO_STATUS = {
     },
 } satisfies ServoStatus;
 
+export interface AllServoData {
+    status: {
+        mode: ServoControlMode;
+        position: ServoPosition;
+    };
+    esp32Connected: boolean;
+}
+
+export const DEFAULT_ALL_SERVO_DATA = {
+    status: {
+        mode: 'manual',
+        position: 0,
+    },
+    esp32Connected: false,
+} satisfies AllServoData;
+
 export const isPositionValid = (position: number) => position >= 0 && position <= 180;
 
 export interface ServoResponse {

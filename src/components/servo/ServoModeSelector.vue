@@ -5,17 +5,20 @@ import { useServoStore } from '@/stores/servo';
 
 const connectionStore = useConnectionStore();
 const servoStore = useServoStore();
+
+const isDisabled = () =>
+    connectionStore.labViewConnected !== true || connectionStore.esp32Connected !== true;
 </script>
 
 <template>
     <div id="control-mode" class="control-element">
-        Aktualny tryb sterowania:
+        <span class="mode-label">Aktualny tryb sterowania:</span>
         <div id="control-mode-buttons">
             <button
                 class="control-button"
                 @click="setControlMode('manual', true)"
                 :class="{ active: servoStore.currentStatus.status.mode === 'manual' }"
-                :disabled="connectionStore.labViewConnected !== true"
+                :disabled="isDisabled()"
             >
                 MANUAL
             </button>
@@ -23,7 +26,7 @@ const servoStore = useServoStore();
                 class="control-button"
                 @click="setControlMode('auto', true)"
                 :class="{ active: servoStore.currentStatus.status.mode === 'auto' }"
-                :disabled="connectionStore.labViewConnected !== true"
+                :disabled="isDisabled()"
             >
                 AUTO
             </button>
@@ -43,6 +46,10 @@ const servoStore = useServoStore();
 
 #control-mode {
     margin-top: 1rem;
+}
+
+.mode-label {
+    margin-bottom: 0.5rem;
 }
 
 #control-mode-buttons {
@@ -71,5 +78,28 @@ const servoStore = useServoStore();
 .control-button.active {
     background-color: var(--color-border-hover);
     border-color: var(--color-text);
+}
+
+.control-button:disabled {
+    cursor: not-allowed;
+    background-color: var(--color-border-hover);
+    border-color: var(--color-border);
+    position: relative;
+    color: #888;
+}
+
+.control-button:disabled:hover::after {
+    content: 'Wymagane połączenie z serwerem i ESP32';
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    pointer-events: none;
 }
 </style>

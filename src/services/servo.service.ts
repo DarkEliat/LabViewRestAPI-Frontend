@@ -1,12 +1,12 @@
 import { apiService } from '@/services/api.service';
 import { useServoStore } from '@/stores/servo';
-import type { ServoStatus, ServoControlMode, ServoResponse } from '@/types/servo.types';
+import type { ServoStatus, ServoControlMode, ServoResponse, AllServoData } from '@/types/servo.types';
 
 const servoStore = useServoStore();
 
 export async function getStatus(updateServoStore = false) {
     try {
-        const servoStatusFromServer = await apiService.get<ServoStatus>('/status');
+        const servoStatusFromServer = await apiService.get<AllServoData>('/status');
 
         if (servoStatusFromServer) {
             if (updateServoStore) servoStore.setStatus(servoStatusFromServer);
