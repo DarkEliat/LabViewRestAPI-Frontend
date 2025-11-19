@@ -138,7 +138,6 @@ import PageContent from '@/components/PageContent.vue';
                         <ul>
                             <li>Jan Kostka</li>
                             <li>Dmytro Levytskyi</li>
-                            <li>Ihor Nytka</li>
                         </ul>
                     </div>
                     <p>Projekt realizowany w ramach zajęć z Oprogramowania Systemów Pomiarowych.</p>
